@@ -3,6 +3,7 @@ package com.thecodeschool.aws.resource;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -38,8 +39,13 @@ public class UserResource {
 	public void updateUserProfile(@PathVariable Long userId, @RequestBody User user) throws Exception {
 		User dbUser = userRepository.findById(userId)
 			.orElseThrow(() -> new Exception("User not found for this id :: " + userId));
-		dbUser.setFirstName(user.getFirstName());
-		dbUser.setLastName(user.getLastName());
+		dbUser.setFirstName(user.getFirstName()==null ? dbUser.getFirstName() : user.getFirstName());
+		dbUser.setLastName(user.getLastName()==null ? dbUser.getLastName() : user.getLastName());
 		userRepository.save(dbUser);
+	}
+	
+	@DeleteMapping("/users/{userId}")
+	public void deleteUserProfile(@PathVariable Long userId) throws Exception {
+		userRepository.deleteById(userId);
 	}
 }
